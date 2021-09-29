@@ -2,14 +2,11 @@ import axios from 'axios';
 import { cloneDeep, isEmpty } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 import { message } from 'antd';
-import { CANCEL_REQUEST_MESSAGE } from 'utils/constant';
 import qs from 'qs';
 import router from 'umi/router';
 
-import { platformToken } from '../utils/constant';
 const { CancelToken } = axios;
 window.cancelRequest = new Map();
-
 
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
@@ -44,22 +41,22 @@ const removePending = (ever) => {
 
 // 请求body拦截器
 axios.interceptors.request.use(config => {
-    if (config.url.toLowerCase().indexOf('login') < 0 && null == sessionStorage.getItem(platformToken)) {
-        message.error('请重新登录')
-        router.push('/login');
-        return
-    }
+    // if (config.url.toLowerCase().indexOf('login') < 0 && null == sessionStorage.getItem('token')) {
+    //     message.error('请重新登录')
+    //     router.push('/login');
+    //     return
+    // }
     let newConfig = config;
 
-    if (undefined != sessionStorage.getItem(platformToken)) {
+    if (undefined != sessionStorage.getItem('token')) {
         newConfig = {
             ...config,
             headers: {
                 post: {
-                    token: sessionStorage.getItem(platformToken),
+                    token: sessionStorage.getItem('token'),
                 },
                 get: {
-                    token: sessionStorage.getItem(platformToken),
+                    token: sessionStorage.getItem('token'),
                 },
             },
         };
@@ -162,7 +159,7 @@ export default function request(options) {
             message.error('服务异常')
             const { response, message } = error
 
-            if (String(message) === CANCEL_REQUEST_MESSAGE) {
+            if (String(message) === 'cancle request') {
                 return {
                     success: false,
                 }
