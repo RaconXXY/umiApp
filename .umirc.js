@@ -1,5 +1,6 @@
 
-// ref: https://umijs.org/config/
+import { resolve } from 'path';
+
 export default {
   treeShaking: true,
   routes: [
@@ -19,7 +20,7 @@ export default {
       dynamicImport: false,
       title: 'umiApp',
       dll: false,
-      
+
       routes: {
         exclude: [
           /models\//,
@@ -31,4 +32,22 @@ export default {
       },
     }],
   ],
+  // disableCSSModules: true,
+  alias: {
+    api: resolve(__dirname, './src/services/'),
+    components: resolve(__dirname, './src/components'),
+    containers: resolve(__dirname, './src/containers'),
+    models: resolve(__dirname, './src/models'),
+    services: resolve(__dirname, './src/services'),
+    utils: resolve(__dirname, './src/utils'),
+    assets: resolve(__dirname, './src/assets'),
+    pages: resolve(__dirname, './src/pages'),
+  },
+  proxy: {
+    "/api": {
+      "target": "http://localhost:3001/",
+      "changeOrigin": true,
+      "pathRewrite": { "^/api": "" }
+    }
+  }
 }
